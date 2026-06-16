@@ -1,155 +1,156 @@
 # Work to Blog Publisher
 
-> Claude Code 세션에서 작업한 내용을 GitHub 저장소로 배포하고 블로그에 공유하는 통합 워크플로우 스킬
+> An integrated workflow skill that deploys work done in a Claude Code session to a GitHub repository and shares it on a blog
 
-## 왜 만들었나?
+## Why was this built?
 
-### 문제점
+### The Problem
 
-개발 작업을 완료한 후 공유하려면 여러 단계를 거쳐야 합니다:
+After finishing development work, sharing it requires several steps:
 
-1. README 문서 작성
-2. Git 초기화 및 커밋
-3. GitHub 저장소 생성 및 push
-4. 블로그 포스트 작성
-5. 블로그 발행
+1. Write a README document
+2. Initialize Git and commit
+3. Create a GitHub repository and push
+4. Write a blog post
+5. Publish the blog post
 
-**이 과정이 번거로워서 좋은 작업물도 공유하지 않고 넘어가는 경우가 많습니다.**
+**This process is cumbersome, so good work often goes unshared.**
 
-### 해결책
+### The Solution
 
-`work-to-blog-publisher`는 이 모든 과정을 **하나의 명령으로 자동화**합니다:
+`work-to-blog-publisher` **automates this whole process with a single command**:
 
 ```
-"작업 결과 배포해줘" → README 작성 → GitHub push → 블로그 발행
+"Deploy the work results" → Write README → GitHub push → Publish blog
 ```
 
-## 주요 기능
+## Key Features
 
-| 기능 | 설명 |
+| Feature | Description |
 |-----|------|
-| **세션 분석** | 현재 작업 내용을 자동으로 분석하여 문서화 |
-| **README 생성** | 프로젝트 목적, 기능, 사용법을 포함한 README 자동 작성 |
-| **GitHub 배포** | 저장소 생성, 커밋, push까지 한 번에 처리 |
-| **블로그 발행** | 프로젝트 필요성을 강조한 블로그 포스트 자동 생성 |
+| **Session analysis** | Automatically analyzes the current work and documents it |
+| **README generation** | Automatically writes a README including the project's purpose, features, and usage |
+| **GitHub deployment** | Handles repository creation, commit, and push in one go |
+| **Blog publishing** | Automatically generates a blog post that emphasizes why the project is needed |
 
-## 빠른 시작
+## Quick Start
 
-### 1. 사전 요구사항
+### 1. Prerequisites
 
 ```bash
-# GitHub CLI 인증 확인
+# Check GitHub CLI authentication
 gh auth status
 
-# WordPress 환경변수 설정 (블로그 발행 시)
+# Set WordPress environment variables (for blog publishing)
 export WP_SITE_URL="https://your-site.com"
 export WP_USERNAME="your-username"
 export WP_APP_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx"
 ```
 
-### 2. 스킬 설치
+### 2. Install the Skill
 
 ```bash
-# 스킬 디렉토리에 복사
+# Copy to the skills directory
 cp -r work-to-blog-publisher ~/.claude/skills/
 ```
 
-### 3. 사용하기
+### 3. Usage
 
-Claude Code에서 다음과 같이 요청:
+Make a request in Claude Code like:
 
 ```
-# 슬래시 커맨드
+# Slash command
 /work-to-blog-publisher
 
-# 또는 자연어로
+# Or in natural language
 "현재 작업한 내용을 GitHub에 배포하고 블로그로 공유해줘"
 "작업 결과 배포해줘"
 "README 작성하고 GitHub에 올려줘"
 ```
 
-## 워크플로우
+## Workflow
 
 ```
 ┌─────────────────┐
 │  Phase 1        │
-│  README 작성    │
-│  - 세션 분석    │
-│  - 문서 생성    │
+│  Write README   │
+│  - Session      │
+│    analysis     │
+│  - Doc generate │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
 │  Phase 2        │
-│  GitHub 배포    │
-│  - 저장소 URL   │
-│    입력받기     │
+│  GitHub deploy  │
+│  - Enter repo   │
+│    URL          │
 │  - commit/push  │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
 │  Phase 3        │
-│  블로그 발행    │
-│  - 콘텐츠 작성  │
+│  Blog publish   │
+│  - Write content│
 │  - WordPress    │
-│    발행         │
+│    publish      │
 └─────────────────┘
 ```
 
-## 사용 예시
+## Usage Examples
 
-### 예시 1: 전체 워크플로우
+### Example 1: Full Workflow
 
 ```
-사용자: 오늘 만든 CLI 도구를 GitHub에 공개하고 블로그에도 올려줘
+User: Publish the CLI tool I built today to GitHub and post it on the blog too
 
-Claude: work-to-blog-publisher 스킬을 사용하겠습니다.
+Claude: I'll use the work-to-blog-publisher skill.
 
-[Phase 1] README 작성 중...
-- 프로젝트: my-cli-tool
-- 목적: 파일 변환 자동화
-- 기능: JSON/YAML/TOML 상호 변환
+[Phase 1] Writing README...
+- Project: my-cli-tool
+- Purpose: Automate file conversion
+- Features: JSON/YAML/TOML interconversion
 
-README.md 생성 완료
+README.md generated
 
-[Phase 2] GitHub 배포
-GitHub 저장소 URL을 입력해주세요.
-예: https://github.com/username/my-cli-tool
+[Phase 2] GitHub deployment
+Please enter the GitHub repository URL.
+e.g.: https://github.com/username/my-cli-tool
 
-사용자: my-cli-tool
+User: my-cli-tool
 
-Claude: 저장소 생성 및 push 완료
+Claude: Repository created and pushed
 https://github.com/username/my-cli-tool
 
-[Phase 3] 블로그 발행
-포스트 작성 완료 (draft)
+[Phase 3] Blog publishing
+Post written (draft)
 https://your-blog.com/?p=123
 ```
 
-### 예시 2: README만 작성
+### Example 2: Write README Only
 
 ```
-사용자: README만 작성해줘
+User: Just write the README
 
-Claude: [Phase 1만 실행]
-README.md 생성 완료
+Claude: [Run Phase 1 only]
+README.md generated
 ```
 
-### 예시 3: GitHub 배포만
+### Example 3: GitHub Deployment Only
 
 ```
-사용자: GitHub에만 올려줘
+User: Just push it to GitHub
 
-Claude: [Phase 2만 실행]
-GitHub 저장소 URL을 입력해주세요.
+Claude: [Run Phase 2 only]
+Please enter the GitHub repository URL.
 ```
 
-## 트리거 키워드
+## Trigger Keywords
 
-스킬이 자동으로 활성화되는 키워드:
+Keywords that automatically activate the skill:
 
-| 한국어 | 영어 |
+| Korean | English |
 |-------|------|
 | 작업 공개 | publish work |
 | GitHub에 배포 | release project |
@@ -158,41 +159,41 @@ GitHub 저장소 URL을 입력해주세요.
 | 작업 결과 배포 | - |
 | README 작성하고 배포 | - |
 
-## 생성되는 문서 구조
+## Generated Document Structure
 
 ### README.md
 
 ```markdown
-# 프로젝트명
+# Project Name
 
-간단한 한 줄 설명
+A brief one-line description
 
-## 왜 만들었나? (Why)
-## 주요 기능 (Features)
-## 빠른 시작 (Quick Start)
-## 설정 (Configuration)
-## 예시 (Examples)
-## 라이선스 (License)
+## Why was this built? (Why)
+## Key Features (Features)
+## Quick Start
+## Configuration
+## Examples
+## License
 ```
 
-### 블로그 포스트
+### Blog Post
 
 ```markdown
-# [프로젝트명]: [한 줄 설명]
+# [Project Name]: [One-line description]
 
 ## TL;DR
-## 왜 만들었나? (Problem)
-## 어떻게 해결했나? (Solution)
-## 사용 방법 (How to Use)
-## 구현 과정에서 배운 것
-## 마무리
+## Why was this built? (Problem)
+## How was it solved? (Solution)
+## How to Use
+## What I learned during implementation
+## Wrap-up
 ```
 
-## 설정
+## Configuration
 
-### WordPress 환경변수
+### WordPress Environment Variables
 
-`~/.zshrc` 또는 `~/.bashrc`에 추가:
+Add to `~/.zshrc` or `~/.bashrc`:
 
 ```bash
 export WP_SITE_URL="https://your-wordpress-site.com"
@@ -200,36 +201,36 @@ export WP_USERNAME="your-username"
 export WP_APP_PASSWORD="xxxx xxxx xxxx xxxx xxxx xxxx"
 ```
 
-**Application Password 생성 방법:**
-1. WordPress 관리자 → 사용자 → 프로필
-2. "애플리케이션 비밀번호" 섹션에서 새 비밀번호 생성
+**How to create an Application Password:**
+1. WordPress admin → Users → Profile
+2. Generate a new password in the "Application Passwords" section
 
 ### GitHub CLI
 
 ```bash
-# 설치 (macOS)
+# Install (macOS)
 brew install gh
 
-# 인증
+# Authenticate
 gh auth login
 ```
 
-## 관련 스킬
+## Related Skills
 
-| 스킬 | 용도 |
+| Skill | Purpose |
 |-----|------|
-| `github-init` | Git 저장소 초기화 전문 |
-| `wp-blog-post` | WordPress 블로그 발행 전문 |
+| `github-init` | Specialized in Git repository initialization |
+| `wp-blog-post` | Specialized in WordPress blog publishing |
 
-## 파일 구조
+## File Structure
 
 ```
 work-to-blog-publisher/
-├── SKILL.md      # 스킬 정의 및 워크플로우
-└── README.md     # 이 문서
+├── SKILL.md      # Skill definition and workflow
+└── README.md     # This document
 ```
 
-## 라이선스
+## License
 
 MIT License
 

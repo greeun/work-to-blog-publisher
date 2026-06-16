@@ -225,7 +225,43 @@ gh repo edit --description "[프로젝트 설명]"
 *이 프로젝트는 [Claude Code](https://claude.ai/claude-code)와 함께 개발되었습니다.*
 ```
 
-### 3.2 블로그 발행
+### 3.2 Infographic visualization (REQUIRED)
+
+**Maximize infographics so the post structure and every explanation are graspable at a glance.**
+Treat visuals as the primary delivery vehicle: if content can be shown, render it as an image
+even when prose would work. Target one visual per major section (minimum 2 per post) and
+**diversify the types**.
+
+| Section | Recommended infographic |
+|---------|-------------------------|
+| Post scope / "what this covers" | **Mind map** (Mermaid `mindmap`) |
+| Why I built it (Problem) | Problem→solution **webtoon/illustrated panel**, before/after schematic |
+| How it's solved (Solution) | **Architecture diagram**, data-flow schematic |
+| How it works / usage flow | **Flowchart**, sequence diagram |
+| Performance / metrics | **Chart/graph** (Mermaid `xychart-beta`, `pie`) |
+| Version / migration | **Timeline** (Mermaid `timeline`) |
+| Comparison / selection | Comparison table, **quadrant chart** |
+| Anything beyond the above | **Open-ended creative visualization** (cards, journey strip, labeled map, custom infographic) — list is not exhaustive |
+
+**Rules**:
+- Do not repeat one type — mix at least 2 (mind map, flowchart, chart, architecture, webtoon…).
+- Judge by "Can the post be understood by skimming the images alone?"
+- **Plugin-independent images only**: render every infographic to a self-contained static image
+  file (PNG/JPG/SVG) and embed it via the core `wp:image` block. Never use inline Mermaid
+  (`<pre class="mermaid">`), chart/diagram shortcodes, plugin-specific blocks, or JS chart
+  libraries — the post must render on any WordPress install with zero plugins.
+- Production follows `wp-blog-post` skill's `Visual Elements Guidelines → Infographic-First
+  Principle`: Mermaid via `mmdc` → PNG; webtoon/custom infographics via image-gen → upload with
+  `upload_media.py`. Specific alt text required on every image.
+
+```bash
+# Mermaid → PNG (mmdc also renders mindmap, xychart-beta, pie, timeline besides flowcharts)
+mmdc -i /tmp/diagram.mmd -o /tmp/diagram.png -w 900 --backgroundColor white
+python ~/.claude/skills/wp-blog-post/scripts/upload_media.py \
+  --file /tmp/diagram.png --alt-text "Diagram description"
+```
+
+### 3.3 블로그 발행
 
 **REQUIRED SUB-SKILL**: `wp-blog-post` 스킬 사용
 
@@ -239,7 +275,7 @@ python ~/.claude/skills/wp-blog-post/scripts/publish_post.py \
   --tags "[관련-태그들]"
 ```
 
-### 3.3 블로그 콘텐츠 강조점
+### 3.4 블로그 콘텐츠 강조점
 
 | 섹션 | 강조 내용 |
 |-----|---------|
@@ -272,6 +308,7 @@ python ~/.claude/skills/wp-blog-post/scripts/publish_post.py \
 
 ### Step 4: 블로그 발행
 - [ ] 블로그 콘텐츠 작성 (필요성 중심)
+- [ ] Infographic visualization (one per section target, min 2, diverse types — mind map/flowchart/chart/architecture/webtoon; plugin-independent static images via `wp:image`)
 - [ ] HTML 변환
 - [ ] wp-blog-post 스킬로 발행
 - [ ] 발행된 URL 사용자에게 전달
